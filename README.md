@@ -20,9 +20,13 @@ DDD规范
  
 #### adapter-persistence层
  adpter-persistence中应该只包含最纯粹的数据库操作，包含数据库增删改查、DO定义、mapper、repo实现类以及DO与领域模型的converter。
+ 
  Q1: mapper和repository(资源库)需要进行区分
+ 
  首先明确下mapper定义在adapter-persistence层，repository资源库的接口定义在domain-model中，reposiroty的实现类定义在adapter-persistence中。另外所有数据库的操作应该通过调用repository完成，不可以单独在某个domainservice、application中引用mapper进行数据库操作
+ 
 Q2: 聚合根与repository的定义应该一一对应, 非聚合根对象数据库操作应该在相应的聚合根中实现
+
  这里涉及到“聚合根”的概念，聚合根就是软件模型中那些最重要的以名词形式存在的领域对象。关于聚合根的定义没有一个特别精确的定义，符合某种特征的就一定要定义成聚合根，更多的还是基于领域知识的一种直觉。前面说了实体与repository应该一一映射，而且操作数据库只能通过repository进行操作。针对非聚合根的实体进行数据库操作时，是去操作实体对应所在的聚合根对应的repository实现的
  
 #### adapter-rest层
