@@ -11,6 +11,7 @@ DDD规范
 3）application层不能访问adapter层，可以访问domain层
 
 问题2: 各模块职能不清晰，导致引入的包出现在不应该出现的模块、功能代码实现出现在不合适的位置
+
 目前工程结构大体分成四部分: adapter适配层、application应用层、domain领域层、common公共层，各层职责如下：
 ### adapter层
 #### adapter-acl层
