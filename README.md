@@ -11,20 +11,20 @@ DDD规范
 问题2: 各模块职能不清晰，导致引入的包出现在不应该出现的模块、功能代码实现出现在不合适的位置
 目前工程结构大体分成四部分: adapter适配层、application应用层、domain领域层、common公共层，各层职责如下：
 ### adapter层
-####### adapter-acl层
+#### adapter-acl层
  该层作为防腐层，主要职责是通俗讲适配外部接口，因而1) 所有涉及到外部rpc接口调用的逻辑都应该放到adapter-acl层 2) 业务逻辑不应该在adapter-acl中实现，而应该调用domain层或者application层。
  
-####### adapter-persistence层
+#### adapter-persistence层
  adpter-persistence中应该只包含最纯粹的数据库操作，包含数据库增删改查、DO定义、mapper、repo实现类以及DO与领域模型的converter。
  Q1: mapper和repository(资源库)需要进行区分
  首先明确下mapper定义在adapter-persistence层，repository资源库的接口定义在domain-model中，reposiroty的实现类定义在adapter-persistence中。另外所有数据库的操作应该通过调用repository完成，不可以单独在某个domainservice、application中引用mapper进行数据库操作
 Q2: 聚合根与repository的定义应该一一对应, 非聚合根对象数据库操作应该在相应的聚合根中实现
  这里涉及到“聚合根”的概念，聚合根就是软件模型中那些最重要的以名词形式存在的领域对象。关于聚合根的定义没有一个特别精确的定义，符合某种特征的就一定要定义成聚合根，更多的还是基于领域知识的一种直觉。前面说了实体与repository应该一一映射，而且操作数据库只能通过repository进行操作。针对非聚合根的实体进行数据库操作时，是去操作实体对应所在的聚合根对应的repository实现的
  
-####### adapter-rest层
+#### adapter-rest层
  主要承载rest接口的编写和converter转换的功能，在adapter-rest中新增代码，业务逻辑不应该在该模块中实现。
  
-####### adapter-rpc层
+#### adapter-rpc层
  主要用于实现暴露给外部调用的rpc接口的实现类，业务逻辑不应该在该模块中实现，而是通过调用domain层或者application层实现。
  
 ### application层
@@ -37,11 +37,11 @@ applicationService需要遵循以下原则：
 业务逻辑应该放到domain-model中或者domain-service中。几乎每一层的逻辑都是希望做到尽可能的薄，尽量把逻辑收敛到domain层，这也确实是我们的初衷。
 
 ### common层
-####### common-lang
+#### common-lang
  存放公共类，比如工具类、异常码等
-####### common-facade
+#### common-facade
   对外提供的rpc接口放到这个包内，另外还包含返回数据类型XXXDTO，查询模型XXXQuery, 操作模型XXXCommand等。
-####### domain层
+#### domain层
  domain层是我们整个应用最核心、最稳定的层，最核心是因为领域相关的逻辑都应该在domain层，最稳定是因为领域模型应该是稳定的，不受外部接口、系统的变更而变更的，应该高度是内聚的。前面我们提到，聚合根是业务逻辑的主要载体，也就是说业务逻辑的实现代码应该尽量地放在聚合根或者聚合根的边界之内。但有时，有些业务逻辑并不适合于放在聚合根上，在这种“迫不得已”的情况下，我们引入领域服务，因此程序中的DomainService应该越少越好。
 Q1: domain层应该高度内聚，只有可能依赖common层，不应该有其他层的依赖
 这些对第三方系统的依赖都应该在adapter-acl中实现，而不是放到domain中，需要集中进行清理，将对应逻辑移动到对应的位置。
